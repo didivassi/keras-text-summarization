@@ -42,8 +42,13 @@ class Seq2SeqSummarizer(object):
         encoder_states = [encoder_state_h, encoder_state_c]
 
         decoder_inputs = Input(shape=(None, self.num_target_tokens), name='decoder_inputs')
+        decoder_embedding = Embedding(input_dim=self.num_target_tokens , output_dim=HIDDEN_UNITS,
+                                      input_length=self.max_target_seq_length, name='decoder_embedding')
+        
+
+        
         decoder_lstm = LSTM(units=HIDDEN_UNITS, return_state=True, return_sequences=True, name='decoder_lstm')
-        decoder_outputs, decoder_state_h, decoder_state_c = decoder_lstm(decoder_inputs,
+        decoder_outputs, decoder_state_h, decoder_state_c = decoder_lstm(decoder_embedding(decoder_inputs),
                                                                          initial_state=encoder_states)
         decoder_dense = Dense(units=self.num_target_tokens, activation='softmax', name='decoder_dense')
         decoder_outputs = decoder_dense(decoder_outputs)
@@ -57,6 +62,7 @@ class Seq2SeqSummarizer(object):
         self.encoder_model = Model(encoder_inputs, encoder_states)
 
         decoder_state_inputs = [Input(shape=(HIDDEN_UNITS,)), Input(shape=(HIDDEN_UNITS,))]
+        
         decoder_outputs, state_h, state_c = decoder_lstm(decoder_inputs, initial_state=decoder_state_inputs)
         decoder_states = [state_h, state_c]
         decoder_outputs = decoder_dense(decoder_outputs)
