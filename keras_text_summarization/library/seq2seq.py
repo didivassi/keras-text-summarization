@@ -42,12 +42,12 @@ class Seq2SeqSummarizer(object):
         encoder_states = [encoder_state_h, encoder_state_c]
 
         decoder_inputs = Input(shape=(None, self.num_target_tokens ), name='decoder_inputs')
-        #decoder_embedding = Embedding(self.num_target_tokens ,self.max_target_seq_length, name='decoder_embedding')
+        decoder_embedding = Embedding(self.num_target_tokens ,self.max_target_seq_length, name='decoder_embedding')
         
 
         
         decoder_lstm = LSTM(units=HIDDEN_UNITS, return_state=True, return_sequences=True, name='decoder_lstm')
-        decoder_outputs, decoder_state_h, decoder_state_c = decoder_lstm(decoder_inputs,
+        decoder_outputs, decoder_state_h, decoder_state_c = decoder_lstm( decoder_embedding(decoder_inputs),
                                                                          initial_state=encoder_states)
         decoder_dense = Dense(units=self.num_target_tokens, activation='softmax', name='decoder_dense')
         decoder_outputs = decoder_dense(decoder_outputs)
