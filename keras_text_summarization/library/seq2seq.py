@@ -42,7 +42,7 @@ class Seq2SeqSummarizer(object):
         encoder_states = [encoder_state_h, encoder_state_c]
 
         decoder_inputs = Input(shape=(None, self.num_target_tokens), name='decoder_inputs')
-        decoder_embedding = Embedding(input_dim=self.num_target_tokens , output_dim=HIDDEN_UNITS,
+        decoder_embedding = Embedding(input_dim=17 , output_dim=HIDDEN_UNITS,
                                       input_length=self.max_target_seq_length, name='decoder_embedding')
         
 
